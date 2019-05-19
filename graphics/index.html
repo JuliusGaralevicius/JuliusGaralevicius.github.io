@@ -2,15 +2,15 @@
 layout: default
 ---
 <section>
-
-	{% for post in site.graphicsprojects %}
 	site found
+	{% for post in site.posts %}
     <div class="container">
             <article>
                 <header>
                     <h2><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
                 </header>
                 <section class="post-content">
+					{{ post.category[0]}}
                     {{ post.excerpt }}
                 </section>
                 <section class="special">
