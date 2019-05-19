@@ -1,10 +1,8 @@
 ---
 layout: default
 ---
-<section>
-
-	{% for post in site.graphicsprojects %}
-	site found
+{% for post in site.posts %}
+<section id="one" >
     <div class="container">
             <article>
                 <header>
@@ -21,5 +19,5 @@ layout: default
             </article>
 
     </div>
-	{% endfor %}
 </section>
+{% endfor %}
