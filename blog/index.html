@@ -2,9 +2,9 @@
 layout: default
 ---
 
-<section>
-     {% for post in site.posts limit:1 %}
+<section id="one" >
     <div class="container">
+        {% for post in site.posts limit:1 %}
             <article>
                 <header>
                     <h2><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
@@ -18,6 +18,27 @@ layout: default
                     </ul>
                 </section>
             </article>
+        {% endfor %}
     </div>
-	{% endfor %}
+</section>
+<section>
+    <div class="container">
+        {% for post in site.posts offset:1 %}
+            <article>
+                <section class="excerpt">
+                <header>
+                    <h3><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3>
+                </header>
+                
+                    {{ post.content | truncatewords: 30 }}
+                </section>
+                <footer>
+                    <ul class="actions">
+                        <li><a href="{{ site.baseurl }}{{ post.url }}" class="button">Read More</a></li>
+                    </ul>
+                </footer>
+                <div class="clear"></div>
+            </article>
+        {% endfor %}
+    </div>
 </section>
