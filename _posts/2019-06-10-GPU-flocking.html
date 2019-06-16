@@ -7,28 +7,28 @@ layout: post
 <p> Dissertation project I did as a part of my Computer Science degree at Newcastle University. The aim was to investigate a technique for general particle optimizations based on nearest-neighbour search. </p>
 <h4>Initial 2D version </h4>
 <p>
-The first executable that uses OpenGL Compute shaders for spatial subdivision, version before worked by each thread checking every other agents position and velocities, this ultimately results in purely O<sup>2</sup> efficiency. Managed to find some nice music ang colours though.
+The first executable that uses OpenGL Compute shaders for spatial subdivision, version before worked by each thread checking every other agents position and velocities, this ultimately results in O<sup>2</sup> efficiency. Managed to find some nice music ang colours though.
 	</br>
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/3bm8I9wjthQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </p>
 
 <h4> Two different flocks </h4>
 <p>
-	It is possible to go one dimension higher by introducing some extra Compute Shader invocations. The invocations each perform a part of counting sort, then the parts are added together to arrange boids into bins. An offset 3d matrix is generated for each cell. The location of each cell and boids it contains is know in the array using the prefix sum computed in previous shader. If boids are distributed well, performance can be n times better than previously if n is number of spatial bins. At this point I started writing my dissertation.
+	It is possible to go one dimension higher by introducing some extra Compute Shader invocations. The invocations each perform a part of counting sort, then the parts are added together to arrange boids into bins. An offset 3d matrix is generated for each cell. The location of each cell and boids it contains is know in the array using the prefix sum computed in previous shader. If boids are distributed well, performance can run marginally better than simple GPU implementation. At this point I started writing my dissertation.
 	</br>
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/Vjdks1dSCcE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </p>
 
 <h4> Obstacle avoidance </h4>
 <p>
-	I have arrived at the conclusion that 3d cube is a good shape, but handling sphere colision is easier. So I created a seperate SSBO for obstacles each having their own position and random radii. They simulate elastic collision aswell, though all calculations are done for spheres. This does not result in completely accurate cube avoidance but demonstrates the general technique. Now two different flocks avoid each other and obstacles whose positions were computed in buffers used by previous shaders. This partialy demonstrates technique compatibility with a possibly bigger framework.
+	I have arrived at the conclusion that 3d cube is a good shape, but handling sphere colision is easier. So I created a seperate SSBO for obstacles each having their own position and random radii. They simulate elastic collision aswell, though all calculations are done for spheres. This does not result in completely accurate cube avoidance but demonstrates the general technique. Now two different flocks avoid each other and obstacles whose positions were computed in buffers used by previous shaders. 
 	</br>
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/Vr5dVB3xqto" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </p>
 
 <h4> Debug mode </h4>
 <p>
-	Finally, the thing i'm most excited about - a debug visualisation of the flock agents. This let's you visually inspect which parts of your simulation cause the most nearest-neighbour calculations to happen and possibly at what interval. One of the solutions for more stable framerates - the parameters of flocking calculations can be tweaked to favour larger gaps between agents, this also increases the average framerate in most cases. Each spatial bin has a color value of green and blue which are inverse of each other on a scale from 0 to 1. Each color value is calculated based on the number of agents in each cell - as number of boids increases the cells loose green and gain blue, resulting in easy indication of areas in the grid where particle clusters reduce the efficiency of simulation (completely blue cubes).
+	Finally - a debug visualisation of the flock agents. This let's you inspect which parts of your simulation cause the most nearest-neighbour calculations to happen and possibly at what interval. One of the solutions for more stable framerates - the parameters of flocking calculations can be tweaked to favour larger gaps between agents, this also increases the average framerate in most cases. Each spatial bin has a color value of green and blue which are inverse of each other on a scale from 0 to 1. Each color value is calculated based on the number of agents in each cell - as number of boids increases the cells loose green and gain blue, resulting in easy indication of areas in the grid where particle clusters reduce the efficiency of simulation (completely blue cubes).
 	</br>
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/98oQfL6m5SE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </p>
