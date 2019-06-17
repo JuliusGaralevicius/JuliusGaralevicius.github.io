@@ -4,31 +4,33 @@ author: Julius
 layout: post
 ---
 <a href="https://github.com/JuliusGaralevicius/3D-flocking/tree/master" class="icon-b fa-github"><span class="label"></span></a>
-<p> Dissertation project I did as a part of my Computer Science degree at Newcastle University. The aim was to investigate a technique for general particle optimizations based on nearest-neighbour search. </p>
-<h4>Initial 2D version </h4>
+<p> Dissertation project I did during my final year at Newcastle University as a part of Computer Science degree. The aim was to investigate a technique for general particle system optimization based on nearest-neighbour search. 
+</p>
+
+<h4> Initial 2D version </h4>
 <p>
-The first executable that uses OpenGL Compute shaders for spatial subdivision, version before worked by each thread checking every other agents position and velocities, this ultimately results in O<sup>2</sup> efficiency. Managed to find some nice music ang colours though.
+	The first executable that uses OpenGL Compute shaders for spatial subdivision. Previous versions worked by giving each flock member a seperate thread in which it would check every other agent for proximity and then apply the rules. While this better utilizes the available hardware, the boids still do many unnecessary checks and performance drops a lot when flock size is increased. The solution is to divide the space into equal spatial bins and for each boid, check only agents in nearby bins. Such solution required some extra steps and Compute shader invocations compared to simple GPU implementation, but the simulation could now handle more agents without visible framerate drops.
 	</br>
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/3bm8I9wjthQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </p>
 
 <h4> Two different flocks </h4>
 <p>
-	It is possible to go one dimension higher by introducing some extra Compute Shader invocations. The invocations each perform a part of counting sort, then the parts are added together to arrange boids into bins. An offset 3d matrix is generated for each cell. The location of each cell and boids it contains is know in the array using the prefix sum computed in previous shader. If boids are distributed well, performance can run marginally better than simple GPU implementation. At this point I started writing my dissertation.
+	It is possible to go one dimension higher by introducing some extra Compute Shader invocations. Due to limitations on number of invocations in a local group, where execution flow can be synchronized, the parallel prefix sum part needed to be split into smaller sub-stages. Compute shader groups are each responsible for a part of prefix sum calculation, then the smaller solutions are added together and boids are arranged into spatial bins. A  3d "neighbourhood" matrix is generated for each bin and more bins need to be checked for each agent compared to 2d version. If boids are distributed well, the simulation can run marginally better than simple GPU implementation. The red and black types of boids each try to stay together with their own kind and avoid different colour agents.
 	</br>
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/Vjdks1dSCcE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </p>
 
 <h4> Obstacle avoidance </h4>
 <p>
-	I have arrived at the conclusion that 3d cube is a good shape, but handling sphere colision is easier. So I created a seperate SSBO for obstacles each having their own position and random radii. They simulate elastic collision aswell, though all calculations are done for spheres. This does not result in completely accurate cube avoidance but demonstrates the general technique. Now two different flocks avoid each other and obstacles whose positions were computed in buffers used by previous shaders. 
+	I created a seperate SSBO for obstacles each having their own position and random radii. They simulate elastic collision aswell, though all calculations are done for spheres. This does not result in completely accurate cube avoidance but demonstrates the general technique. Now two different flocks avoid each other and obstacles whose positions were computed by previous shaders.
 	</br>
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/Vr5dVB3xqto" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </p>
 
 <h4> Debug mode </h4>
 <p>
-	Finally - a debug visualisation of the flock agents. This let's you inspect which parts of your simulation cause the most nearest-neighbour calculations to happen and possibly at what interval. One of the solutions for more stable framerates - the parameters of flocking calculations can be tweaked to favour larger gaps between agents, this also increases the average framerate in most cases. Each spatial bin has a color value of green and blue which are inverse of each other on a scale from 0 to 1. Each color value is calculated based on the number of agents in each cell - as number of boids increases the cells loose green and gain blue, resulting in easy indication of areas in the grid where particle clusters reduce the efficiency of simulation (completely blue cubes).
+	Finally - a visualisation of the flock density. This let's you inspect which parts of the simulation cause the most nearest-neighbour calculations to happen. One of the solutions for more stable framerates - the parameters of flocking calculations can be tweaked to favour larger gaps between agents, this also increases the average framerate in most cases. Each spatial bin has a color value of green and blue which are inverse of each other on a scale from 0 to 1. Each color value is calculated based on the number of agents in each cell - as number of boids increases the cells loose green and gain blue, resulting in easy to spot indication of areas in the grid where particles cluster the most.
 	</br>
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/98oQfL6m5SE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </p>
